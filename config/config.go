@@ -5,17 +5,18 @@ const (
 	KAFKA_PORT = "9092"
 )
 
-type KafkaConfig struct {
+type kafkaConfig struct {
 	Host string
 	Port string
 }
 
-func (config KafkaConfig) GetBrokerURL() string {
+func GetBrokerURL() string {
+	config := getKafkaConfig()
 	return config.Host + ":" + config.Port
 }
 
-func GetKafkaBroker() KafkaConfig {
-	return KafkaConfig{
+func getKafkaConfig() kafkaConfig {
+	return kafkaConfig{
 		Host: KAFKA_HOST,
 		Port: KAFKA_PORT,
 	}
