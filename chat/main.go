@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/reeechart/foroom/chat/receiver"
+	"github.com/reeechart/foroom/chat/sender"
 	foroomerrors "github.com/reeechart/foroom/errors"
 )
 
@@ -16,6 +18,12 @@ func main() {
 
 	interruptChan := make(chan os.Signal, 1)
 	signal.Notify(interruptChan, os.Interrupt)
+
+	sender := sender.NewSender(interruptChan)
+	receiver := receiver.NewReceiver(interruptChan)
+
+	go sender.ListenAndSendUserInputs(room)
+	go receiver.ConsumeMessages(room, 0)
 
 	<-interruptChan
 
