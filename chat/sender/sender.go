@@ -19,13 +19,14 @@ func NewSender(interruptChan chan os.Signal) Sender {
 	}
 }
 
-func (sender Sender) ListenAndSendUserInputs(topic string) {
+func (sender Sender) ListenAndSendUserInputs(topic string, user string) {
 	msgChan := make(chan string)
 	inputListener := InputListener{MsgChannel: msgChan}
 	go inputListener.GetInput()
 	for {
 		select {
 		case msg := <-inputListener.MsgChannel:
+			msg = user + ": " + msg
 			sender.sendMessage(topic, msg)
 		case <-sender.InterruptChannel:
 			sender.closeProducer()

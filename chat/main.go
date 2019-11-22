@@ -26,7 +26,7 @@ func main() {
 	sender := sender.NewSender(interruptChan)
 	receiver := receiver.NewReceiver(interruptChan)
 
-	go sender.ListenAndSendUserInputs(room)
+	go sender.ListenAndSendUserInputs(room, user)
 	go receiver.ConsumeMessages(room, 0)
 
 	<-interruptChan
