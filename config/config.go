@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 const (
 	KAFKA_HOST = "localhost"
 	KAFKA_PORT = "9092"
@@ -17,7 +19,7 @@ func GetBrokerURL() string {
 
 func getKafkaConfig() kafkaConfig {
 	return kafkaConfig{
-		Host: KAFKA_HOST,
-		Port: KAFKA_PORT,
+		Host: os.Getenv("KAFKA_HOST"),
+		Port: os.Getenv("KAFKA_PORT"),
 	}
 }

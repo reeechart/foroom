@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/joho/godotenv"
 	"github.com/reeechart/foroom/chat/receiver"
 	"github.com/reeechart/foroom/chat/sender"
 	foroomerrors "github.com/reeechart/foroom/errors"
@@ -15,6 +16,9 @@ func main() {
 	user, room, err := parseUserAndRoom()
 	checkError(err)
 	initiateForoomSession(user, room)
+
+	err = godotenv.Load()
+	checkError(err)
 
 	interruptChan := make(chan os.Signal, 1)
 	signal.Notify(interruptChan, os.Interrupt)
