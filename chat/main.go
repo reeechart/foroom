@@ -1,17 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"os"
 	"os/signal"
 
 	foroomerrors "github.com/reeechart/foroom/errors"
-)
-
-var (
-	scanner *bufio.Scanner
 )
 
 func main() {
@@ -45,11 +40,6 @@ func argValid(user, room string) bool {
 func initiateForoomSession(user, room string) {
 	fmt.Printf("Welcome, %s to room %s @ Foroom\n", user, room)
 	fmt.Println("Start chatting!")
-}
-
-func receiveRoomName() string {
-	scanner.Scan()
-	return scanner.Text()
 }
 
 func closeForoomSession() {
