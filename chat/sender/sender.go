@@ -15,13 +15,16 @@ func NewSender() Sender {
 	}
 }
 
-func (sender Sender) SendMessage(topic string, content string) (partition int32, offset int64, err error) {
+func (sender Sender) SendMessage(topic string, content string) {
 	msg := &sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.StringEncoder(content),
 	}
-	partition, offset, err = sender.Producer.SendMessage(msg)
-	return
+
+	_, _, err := sender.Producer.SendMessage(msg)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getProducer() sarama.SyncProducer {
