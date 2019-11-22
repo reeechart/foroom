@@ -1,27 +1,51 @@
 package sender
 
 import (
+	"os"
+
 	"github.com/Shopify/sarama"
 	kafkaconfig "github.com/reeechart/foroom/config"
 )
 
 type Sender struct {
-	Producer sarama.SyncProducer
+	Producer         sarama.SyncProducer
+	InterruptChannel chan os.Signal
 }
 
-func NewSender() Sender {
+func NewSender(interruptChan chan os.Signal) Sender {
 	return Sender{
-		Producer: getProducer(),
+		Producer:         getProducer(),
+		InterruptChannel: interruptChan,
 	}
 }
 
-func (sender Sender) SendMessage(topic string, content string) {
+func (sender Sender) ListenAndSendUserInputs(topic string) {
+	msgChan := make(chan string)
+	inputListener := InputListener{MsgChannel: msgChan}
+	for {
+		select {
+		case msg := <-inputListener.MsgChannel:
+			sender.sendMessage(topic, msg)
+		case <-sender.InterruptChannel:
+			sender.closeProducer()
+		}
+	}
+}
+
+func (sender Sender) sendMessage(topic string, content string) {
 	msg := &sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.StringEncoder(content),
 	}
 
 	_, _, err := sender.Producer.SendMessage(msg)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (sender Sender) closeProducer() {
+	err := sender.Producer.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -45,5 +69,6 @@ func getSaramaConfig() *sarama.Config {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Retry.Max = 5
+	config.Producer.Return.Successes = true
 	return config
 }
