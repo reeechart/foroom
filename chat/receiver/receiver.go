@@ -32,7 +32,7 @@ func (receiver Receiver) ConsumeMessages(topic string, partition int32) {
 		case err := <-consumer.Errors():
 			fmt.Println(err)
 		case msg := <-consumer.Messages():
-			fmt.Println(msg.Value)
+			fmt.Println(string(msg.Value))
 		case <-receiver.InterruptChannel:
 			break
 		}
