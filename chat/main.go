@@ -18,8 +18,8 @@ func main() {
 	signal.Notify(interruptChan, os.Interrupt)
 
 	<-interruptChan
-	fmt.Println()
-	fmt.Println("Exited foroom")
+
+	closeForoomSession()
 }
 
 func initiateForoomSession() {
@@ -34,4 +34,9 @@ func initiateForoomSession() {
 func receiveRoomName() string {
 	scanner.Scan()
 	return scanner.Text()
+}
+
+func closeForoomSession() {
+	fmt.Println()
+	fmt.Println("See you next time!")
 }
