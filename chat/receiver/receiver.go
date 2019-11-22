@@ -3,19 +3,20 @@ package receiver
 import (
 	"fmt"
 	"os"
-	"os/signal"
 
 	"github.com/Shopify/sarama"
 	kafkaconfig "github.com/reeechart/foroom/config"
 )
 
 type Receiver struct {
-	Consumer sarama.Consumer
+	Consumer         sarama.Consumer
+	InterruptChannel chan os.Signal
 }
 
-func NewReceiver() Receiver {
+func NewReceiver(interruptChan chan os.Signal) Receiver {
 	return Receiver{
-		Consumer: getConsumer(),
+		Consumer:         getConsumer(),
+		InterruptChannel: interruptChan,
 	}
 }
 
@@ -26,16 +27,13 @@ func (receiver Receiver) ConsumeMessages(topic string, partition int32, offset i
 	}
 	defer receiver.closeConsumer()
 
-	interruptChan := make(chan os.Signal, 1)
-	signal.Notify(interruptChan, os.Interrupt)
-
 	for {
 		select {
 		case err := <-consumer.Errors():
 			fmt.Println(err)
 		case msg := <-consumer.Messages():
 			fmt.Println(msg.Value)
-		case <-interruptChan:
+		case <-receiver.InterruptChannel:
 			break
 		}
 	}
