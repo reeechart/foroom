@@ -32,10 +32,14 @@ func parseUserAndRoom() (string, string, error) {
 	roomPtr := flag.String("room", "", "room name to enter")
 	flag.Parse()
 
-	if *userPtr == "" && *roomPtr == "" {
+	if !argValid(*userPtr, *roomPtr) {
 		return "", "", foroomerrors.ErrInvalidArgs
 	}
 	return *userPtr, *roomPtr, nil
+}
+
+func argValid(user, room string) bool {
+	return (user != "" && room != "")
 }
 
 func initiateForoomSession(user, room string) {
