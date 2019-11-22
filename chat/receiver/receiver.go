@@ -20,8 +20,8 @@ func NewReceiver(interruptChan chan os.Signal) Receiver {
 	}
 }
 
-func (receiver Receiver) ConsumeMessages(topic string, partition int32, offset int64) {
-	consumer, err := receiver.Consumer.ConsumePartition(topic, partition, offset)
+func (receiver Receiver) ConsumeMessages(topic string, partition int32) {
+	consumer, err := receiver.Consumer.ConsumePartition(topic, partition, sarama.OffsetOldest)
 	if err != nil {
 		panic(err)
 	}
