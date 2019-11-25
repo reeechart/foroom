@@ -55,7 +55,7 @@ func (sender Sender) closeProducer() {
 
 func getProducer() sarama.SyncProducer {
 	brokers := getBrokersList()
-	config := getSaramaConfig()
+	config := getSenderConfig()
 	producer, err := sarama.NewSyncProducer(brokers, config)
 	if err != nil {
 		panic(err)
@@ -67,7 +67,7 @@ func getBrokersList() []string {
 	return []string{kafkaconfig.GetBrokerURL()}
 }
 
-func getSaramaConfig() *sarama.Config {
+func getSenderConfig() *sarama.Config {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Retry.Max = 5

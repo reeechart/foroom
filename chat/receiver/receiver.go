@@ -48,7 +48,7 @@ func (receiver Receiver) closeConsumer() {
 
 func getConsumer() sarama.Consumer {
 	brokers := getBrokersList()
-	config := getSaramaConfig()
+	config := getReceiverConfig()
 	consumer, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
 		panic(err)
@@ -60,7 +60,7 @@ func getBrokersList() []string {
 	return []string{kafkaconfig.GetBrokerURL()}
 }
 
-func getSaramaConfig() *sarama.Config {
+func getReceiverConfig() *sarama.Config {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	return config
