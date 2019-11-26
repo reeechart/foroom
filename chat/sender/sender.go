@@ -22,8 +22,8 @@ func NewSender(interruptChan chan os.Signal) Sender {
 func (sender Sender) ListenAndSendUserInputs(topic string, user string) {
 	msgChan := make(chan string)
 	inputListener := InputListener{MsgChannel: msgChan}
-	go inputListener.GetInput()
 	for {
+		go inputListener.GetInput()
 		select {
 		case msg := <-inputListener.MsgChannel:
 			msg = user + ": " + msg
